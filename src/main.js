@@ -5,6 +5,7 @@ import App from './App'
 import VueResource from 'vue-resource'
 import {store} from "./store/store"
 import * as firebase from "firebase"
+import config from "./firebase/config"
 
 Vue.use(VueResource);
 
@@ -21,14 +22,6 @@ new Vue({
   components: { App },
   template: '<App/>', 
   created() {
-    var config = {
-      apiKey: "AIzaSyDQpJPyjNqo-xtXI8AT5YSXHiP2tfPZzq8",
-      authDomain: "crypto-folio-7b954.firebaseapp.com",
-      databaseURL: "https://crypto-folio-7b954.firebaseio.com",
-      projectId: "crypto-folio-7b954",
-      storageBucket: "crypto-folio-7b954.appspot.com",
-      messagingSenderId: "387848486561"
-    };
     firebase.initializeApp(config);
 
     firebase.auth().onAuthStateChanged((user) => {
