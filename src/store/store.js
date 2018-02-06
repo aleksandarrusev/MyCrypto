@@ -10,7 +10,7 @@ export const store = new Vuex.Store({
   state: {
     availableCryptos: ['Bitcoin', 'Ethereum', 'Ripple', 'Litecoin', 'DASH', 'Bitcoin-Cash', 'Cardano', 'Monero', 'Stellar', 'IOTA'],
     loggedUser: null,
-    totalSum: 0,
+    total: 0,
     loading: true,
     currentValue: {},
   },
@@ -21,6 +21,9 @@ export const store = new Vuex.Store({
 
   },
   mutations: {
+    setTotal(state, payload) {
+      state.total = payload;
+    },
     setUser(state, payload) {
       state.loggedUser = payload
     },

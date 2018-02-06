@@ -23,9 +23,11 @@
                 <div class="panel-heading">Current status</div>
                 <div class="panel-body">
                 <h1 v-if="loading">Loading...</h1>
-                  <table v-else class="table table-striped">
+                <div v-else>
+                      <h2>Total: ${{ total | toFixed }}</h2>
+                      <button class="btn btn-primary" @click="loadCryptoData">Refresh</button>
+                  <table class="table table-striped">
                     <thead>
-                    <h2>Total: ${{ totalFixed }}</h2>
                       <tr>
                         <th>Cryptocurrency name</th>
                         <th>Quantity</th>
@@ -44,6 +46,7 @@
                       </tr>
                     </tbody>
                   </table>
+                </div>
                 </div>
               </div>
 
@@ -65,10 +68,9 @@ export default {
     };
   },
   computed: {
-
-    totalFixed() {
-      return this.total.toFixed(2);
-    },
+    // totalFixed() {
+    //   return this.total.toFixed(2);
+    // },
     loggedUser() {
       return this.$store.state.loggedUser;
     },
@@ -77,6 +79,11 @@ export default {
     },
     availableCryptos() {
       return this.$store.state.availableCryptos;
+    }
+  },
+  watch: {
+    total: function(val) {
+      this.$store.commit("setTotal", val);
     }
   },
   methods: {
@@ -99,7 +106,7 @@ export default {
     },
     getCryptoInfo: function(item, index) {
       let result = [];
-      let that = this;
+      let context = this;
       return new Promise((res, rej) => {
         let url = "https://api.coinmarketcap.com/v1/ticker/" + item.name + "/";
         this.$http
@@ -129,21 +136,25 @@ export default {
         promises.push(this.getCryptoInfo(item, index));
       });
 
-      let that = this;
+      let context = this;
       Promise.all(promises).then(function(dataArr) {
-        that.loading = false;
+        context.loading = false;
         dataArr.forEach(function(data) {
-          that.total += data.value;
-          that.$store.dispatch("loadCryptoInformation", data);
+          context.total += data.value;
+          context.$store.dispatch("loadCryptoInformation", data);
         });
       });
     }
   },
+
   created() {
     this.loadCryptoData();
-  }
+  },
 };
 </script>
-<style>
+<style scoped>
+.refresh {
+  margin-top:20px;
+}
 
 </style>

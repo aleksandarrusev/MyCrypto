@@ -6,12 +6,12 @@
 </template>
 
 <script>
-import Header from "./components/header"
+import Header from "./components/header";
 export default {
   components: {
-    'app-header':Header,
-  }
-}
+    "app-header": Header
+  },
+};
 </script>
 
 <style>
