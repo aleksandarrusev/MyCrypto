@@ -1,6 +1,6 @@
-# test
+# MyCrypto
 
-> A Vue.js project
+> The app is built with VueJS and uses Coinmarketcap's API for checking the currect cryptocurrencies information. 
 
 ## Build Setup
 
