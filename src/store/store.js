@@ -36,8 +36,8 @@ export const store = new Vuex.Store({
     },
     setCurrencyData(state, payload) {
       let currentItem = state.loggedUser.portfolio[payload.index];
-      currentItem.price = payload.price;
-      currentItem.value = payload.value;
+      currentItem.price = payload.price.toFixed(2);
+      currentItem.value = payload.value.toFixed(2);
     },
     addItem(state, payload) {
       state.loggedUser.portfolio.push({
@@ -176,13 +176,13 @@ export const store = new Vuex.Store({
         firebase.database().ref('users/' + uid + '/portfolio/').child(foundKey).update({
           quantity: quantitySum
         }).then(() => {
-          console.log(item);
-          console.log(quantitySum);
+          // console.log(item);
+          // console.log(quantitySum);
           let obj = {
             item: item,
             quantity: quantitySum,
           }
-          console.log(obj);
+          // console.log(obj);
           commit('updateQuantity', obj)
           res();
         }).catch(() => {

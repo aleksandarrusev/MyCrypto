@@ -5,13 +5,14 @@
         <div class="panel-body">
             <div class="form-group">
             <select class="form-control" name="" v-model="name">
+                <option value="" disabled>Choose your crypto...</option>
                 <option v-for="crypto in availableCryptos" :value="crypto"> {{ crypto }}</option>
             </select>
             </div>
             <div class="form-group">
             <input type="number" class="form-control" v-model="quantity" required>
             </div>
-            <button class="btn btn-primary" :disabled="quantity < 1" @click="addItem">Add crypto!</button>
+            <button class="btn btn-primary" :disabled="quantity < 1 || !name " @click="addItem">Add crypto!</button>
         </div>
         </div>
     </div>
@@ -25,7 +26,6 @@ export default {
       quantity: 0
     };
   },
-  props: ["loadCryptoData"],
   computed: {
     loggedUser() {
       return this.$store.getters.user;
@@ -44,7 +44,7 @@ export default {
             quantity: this.quantity
           })
           .then(() => {
-            this.loadCryptoData();
+            this.$parent.loadCryptoData();
           });
       }
     },  }

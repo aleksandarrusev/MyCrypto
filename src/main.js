@@ -7,7 +7,6 @@ import { store } from "./store/store"
 import * as firebase from "firebase"
 import config from "./firebase/config"
 import router from './router'
-import { focus } from 'vue-focus';
 
 
 Vue.use(VueResource);
@@ -22,7 +21,11 @@ Vue.filter('toFixed', function (value) {
 new Vue({
   el: '#app',
   router,
-  directives: { focus: focus },
+  filters: {
+    toFixed: function (value) {
+      return value.toFixed(2);
+    }
+  },
   store,
   components: {
     App
