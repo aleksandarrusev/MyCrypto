@@ -4,8 +4,6 @@ import * as firebase from 'firebase'
 
 Vue.use(Vuex);
 
-
-
 export const store = new Vuex.Store({
   state: {
     availableCryptos: ['Bitcoin', 'Ethereum', 'Ripple', 'Litecoin', 'DASH', 'Bitcoin-Cash', 'Cardano', 'Monero', 'Stellar', 'IOTA'],
@@ -18,6 +16,9 @@ export const store = new Vuex.Store({
     user: function (state) {
       return state.loggedUser
     },
+    total: function(state) {
+      return state.total;
+    }
 
   },
   mutations: {
@@ -37,11 +38,12 @@ export const store = new Vuex.Store({
         key: payload.key,
         name: payload.name,
         quantity: payload.quantity,
+        editable: false
       })
     },
     updateQuantity(state, payload) {
-      let found = payload.found;
-      found.quantity = payload.quantity;
+      let item = payload.item;
+      item.quantity = payload.quantity;
     },
     deleteItem(state, payload) {
       let found = state.loggedUser.portfolio.find(function (item) {
@@ -93,6 +95,7 @@ export const store = new Vuex.Store({
                 key: item,
                 name: portfolioRaw[item].name,
                 quantity: portfolioRaw[item].quantity,
+                editable: false
               };
 
               portfolio.push(portfolioItem)
@@ -122,6 +125,7 @@ export const store = new Vuex.Store({
     },
     addItem: function ({
       commit,
+      dispatch,
       state,
       getters
     }, payload) {
@@ -146,19 +150,42 @@ export const store = new Vuex.Store({
             res();
           });
         } else {
-          let quantitySum = Number(payload.quantity) + Number(found.quantity);
-          firebase.database().ref('users/' + uid + '/portfolio/').child(foundKey).update({
-            quantity: quantitySum
-          }).then(() => {
-            let obj = {
-              found: found,
-              quantity: quantitySum,
-            }
-            commit('updateQuantity', obj)
-            res();
-          });
+          dispatch("updateItem", payload).then(() => { res() });
         }
       })
+    },
+    updateItem: function ({
+      commit, getters
+    }, payload) {
+      const uid = getters.user.id;
+      const item = getters.user.portfolio.find((item) => item.name === payload.name);
+      const foundKey = item.key;
+      let quantitySum;
+      if(!payload.newValue) {
+        quantitySum = Number(payload.quantity) + Number(item.quantity);
+      } else {
+        quantitySum = payload.quantity
+      }
+      return new Promise ((res, rej) => {
+        firebase.database().ref('users/' + uid + '/portfolio/').child(foundKey).update({
+          quantity: quantitySum
+        }).then(() => {
+          console.log(item);
+          console.log(quantitySum);
+          let obj = {
+            item: item,
+            quantity: quantitySum,
+          }
+          console.log(obj);
+          commit('updateQuantity', obj)
+          res();
+        }).catch(() => {
+          console.log("bad request :(")
+        });
+      })
+
+      //find it in the database and update it;
+      //commit to the state
     },
     deleteItem: function ({
       commit,

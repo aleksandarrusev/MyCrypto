@@ -14,11 +14,8 @@ let router = new Router({
   mode: "history",
   routes: [
     {
-      path: '/market',
+      path: '/',
       name: 'market',
-      // redirect: {
-      //   path: "signin"
-      // },
       component: market,
       beforeEnter: (to, from, next) => {
         if (!store.state.loggedUser) {
@@ -29,16 +26,9 @@ let router = new Router({
       }
     },
     {
-      path: '/',
+      path: '/signout',
       name: 'home',
-      component: home,
-      beforeEnter: (to, from, next) => {
-        if (!store.state.loggedUser) {
-          next("/signin")
-        } else {
-          next()
-        }
-      }
+      redirect: "/signin"
     },
     {
       path: '/signin',

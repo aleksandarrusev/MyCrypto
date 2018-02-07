@@ -3,17 +3,15 @@
 import Vue from 'vue'
 import App from './App'
 import VueResource from 'vue-resource'
-import {
-  store
-} from "./store/store"
+import { store } from "./store/store"
 import * as firebase from "firebase"
 import config from "./firebase/config"
+import router from './router'
+import { focus } from 'vue-focus';
+
 
 Vue.use(VueResource);
-
-import router from './router'
-
-Vue.config.productionTip = false
+// console.log(focus);
 
 Vue.filter('toFixed', function (value) {
     return value.toFixed(2);
@@ -24,6 +22,7 @@ Vue.filter('toFixed', function (value) {
 new Vue({
   el: '#app',
   router,
+  directives: { focus: focus },
   store,
   components: {
     App

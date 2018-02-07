@@ -22,10 +22,14 @@
               <div class="panel panel-default">
                 <div class="panel-heading">Current status</div>
                 <div class="panel-body">
-                <h1 v-if="loading">Loading...</h1>
+                <h1 v-if="loading">Loading...
+                        <i class="fa fa-spinner fa-spin" style="font-size:24px"></i>
+                </h1>
                 <div v-else>
-                      <h2>Total: ${{ total | toFixed }}</h2>
-                      <button class="btn btn-primary" @click="loadCryptoData">Refresh</button>
+                      <h2>
+                        <button style="margin-bottom:8px" class="btn btn-primary" @click="loadCryptoData"><i class="fas fa-sync-alt"></i></button>
+
+                        Total: ${{ total | toFixed }}</h2>
                   <table class="table table-striped">
                     <thead>
                       <tr>
@@ -33,16 +37,28 @@
                         <th>Quantity</th>
                         <th>Value</th>
                         <th>Current price</th>
-                        <th>Remove from portfolio</th>
+                        <th>Decr.</th>
+                        <th>Incr.</th>
+                        <th>Remove</th>
                       </tr>
                     </thead>
                     <tbody>
                       <tr v-for="item in userPortfolio">
-                        <td>{{ item.name }}</td>
-                        <td>{{ item.quantity }}</td>
-                        <td>{{ item.value }}</td>
-                        <td>{{ item.price }}</td>
-                        <td><button class="btn btn-danger" @click.prevent="deleteItem(item.key)">Remove</button></td>
+                        <td class="col-xs-3">{{ item.name }}</td>
+                        <td class="col-xs-2">
+                          <span v-show="!item.editable" @click="toggle(item, $event)">{{ item.quantity }}</span>
+                          <input type="text" class="edit" :id="item.name" v-show="item.editable" @blur="saveInfo(item)" :value="item.quantity">
+                        </td>
+                        <td class="col-xs-2">${{ item.value | toFixed }}</td>
+                        <td  class="col-xs-2">${{ item.price | toFixed}}</td>
+                        <td class="col-xs-1">
+                          <button class="btn btn-default" @click="updateItem(item, -1, false)"  type="button"><i class="fas fa-minus"></i></button>
+                        </td>
+                        <td class="col-xs-1">
+                          <button class="btn btn-default" @click="updateItem(item, 1, false)"  type="button"><i class="fas fa-plus"></i></button>
+                        </td>
+                        <td  class="col-xs-1"><button class="btn btn-default" @click.prevent="deleteItem(item.key)"><i class="fas fa-trash-alt"></i></button>
+                        </td>
                       </tr>
                     </tbody>
                   </table>
@@ -57,20 +73,21 @@
     </div>
 </template>
 <script>
+import { mixin as focusMixin } from "vue-focus";
+
 export default {
   data() {
     return {
-      info: "INFOOOO",
+      focused: false,
       name: "",
       quantity: 0,
       total: 0,
       loading: true
     };
   },
+  // mixins: [focusMixin],
+
   computed: {
-    // totalFixed() {
-    //   return this.total.toFixed(2);
-    // },
     loggedUser() {
       return this.$store.state.loggedUser;
     },
@@ -87,12 +104,36 @@ export default {
     }
   },
   methods: {
+    toggle: function(item) {
+      item.editable = !item.editable;
+      this.$nextTick(function() {
+        document.getElementById(item.name).focus();
+      });
+
+    },
+    saveInfo: function(item) {
+      let value = document.getElementById(item.name).value;
+      this.updateItem(item, value, true)
+      item.editable = !item.editable;
+    },
     addItem: function(data) {
       this.loading = true;
       this.$store
         .dispatch("addItem", {
           name: this.name,
           quantity: this.quantity
+        })
+        .then(() => {
+          this.loadCryptoData();
+        });
+    },
+    updateItem: function(data, value, newValue) {
+      this.loading = true;
+      this.$store
+        .dispatch("updateItem", {
+          name: data.name,
+          quantity: value,
+          newValue: newValue
         })
         .then(() => {
           this.loadCryptoData();
@@ -105,7 +146,6 @@ export default {
       });
     },
     getCryptoInfo: function(item, index) {
-      let result = [];
       let context = this;
       return new Promise((res, rej) => {
         let url = "https://api.coinmarketcap.com/v1/ticker/" + item.name + "/";
@@ -118,7 +158,7 @@ export default {
             let cryptoInfo = data[0];
             let obj = {
               index: index,
-              price: cryptoInfo.price_usd,
+              price: +cryptoInfo.price_usd,
               value: cryptoInfo.price_usd * item.quantity
             };
             res(obj);
@@ -149,12 +189,25 @@ export default {
 
   created() {
     this.loadCryptoData();
-  },
+  }
 };
 </script>
 <style scoped>
 .refresh {
-  margin-top:20px;
+  margin-top: 20px;
 }
-
+.table td,
+th {
+  text-align: center;
+}
+th {
+  padding-bottom: 20px !important;
+}
+.count {
+  text-align: center;
+}
+.edit {
+  width:60px;
+  text-align:center
+}
 </style>

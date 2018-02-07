@@ -4,8 +4,7 @@
     <div class="navbar-header">
       <a class="navbar-brand" href="#">MyCrypto</a>
     <ul class="nav navbar-nav">
-        <router-link to="/" tag="li" active-class="active" exact><a>Home</a> </router-link>
-        <router-link to="/market" tag="li" active-class="active"><a>Market</a></router-link>
+        <router-link to="/" tag="li" active-class="active" exact><a>Marketplace</a> </router-link>
     </ul>
       </div>
       <ul class="nav navbar-nav navbar-right" v-if="!isSignedIn">
