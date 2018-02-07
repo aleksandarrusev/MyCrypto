@@ -73,19 +73,17 @@
     </div>
 </template>
 <script>
-import { mixin as focusMixin } from "vue-focus";
+import addForm from "./addForm";
 
 export default {
   data() {
     return {
       focused: false,
+      total: 0,
       name: "",
       quantity: 0,
-      total: 0,
-      loading: true
     };
   },
-  // mixins: [focusMixin],
 
   computed: {
     loggedUser() {
@@ -96,6 +94,9 @@ export default {
     },
     availableCryptos() {
       return this.$store.state.availableCryptos;
+    },
+    loading() {
+      return this.$store.getters.loading;
     }
   },
   watch: {
@@ -109,15 +110,15 @@ export default {
       this.$nextTick(function() {
         document.getElementById(item.name).focus();
       });
-
     },
     saveInfo: function(item) {
       let value = document.getElementById(item.name).value;
-      this.updateItem(item, value, true)
+      this.updateItem(item, value, true);
       item.editable = !item.editable;
     },
     addItem: function(data) {
       this.loading = true;
+      // this.$store.commit("setLoading", true);
       this.$store
         .dispatch("addItem", {
           name: this.name,
@@ -129,6 +130,8 @@ export default {
     },
     updateItem: function(data, value, newValue) {
       this.loading = true;
+      // this.$store.commit("setLoading", true);
+
       this.$store
         .dispatch("updateItem", {
           name: data.name,
@@ -179,6 +182,8 @@ export default {
       let context = this;
       Promise.all(promises).then(function(dataArr) {
         context.loading = false;
+        // context.$store.commit("setLoading", false);
+
         dataArr.forEach(function(data) {
           context.total += data.value;
           context.$store.dispatch("loadCryptoInformation", data);
@@ -207,7 +212,7 @@ th {
   text-align: center;
 }
 .edit {
-  width:60px;
-  text-align:center
+  width: 60px;
+  text-align: center;
 }
 </style>

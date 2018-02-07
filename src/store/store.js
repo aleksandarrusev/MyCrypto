@@ -9,7 +9,7 @@ export const store = new Vuex.Store({
     availableCryptos: ['Bitcoin', 'Ethereum', 'Ripple', 'Litecoin', 'DASH', 'Bitcoin-Cash', 'Cardano', 'Monero', 'Stellar', 'IOTA'],
     loggedUser: null,
     total: 0,
-    loading: true,
+    loading: false,
     currentValue: {},
   },
   getters: {
@@ -18,12 +18,18 @@ export const store = new Vuex.Store({
     },
     total: function(state) {
       return state.total;
+    },
+    loading: function (state) {
+      return state.loading;
     }
 
   },
   mutations: {
     setTotal(state, payload) {
       state.total = payload;
+    },
+    setLoading(state, payload) {
+      state.loading = payload;
     },
     setUser(state, payload) {
       state.loggedUser = payload
@@ -164,7 +170,7 @@ export const store = new Vuex.Store({
       if(!payload.newValue) {
         quantitySum = Number(payload.quantity) + Number(item.quantity);
       } else {
-        quantitySum = payload.quantity
+        quantitySum = Number(payload.quantity);
       }
       return new Promise ((res, rej) => {
         firebase.database().ref('users/' + uid + '/portfolio/').child(foundKey).update({
