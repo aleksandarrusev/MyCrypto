@@ -3,6 +3,8 @@
 The app is built with VueJS and uses Coinmarketcap's API for checking the currect cryptocurrencies information. 
 App uses Firebase as a database source, Vue-resource as HTTP API and Vuex for state management.
 
+![alt text](capture.png)
+
 ## Setup
 
 ``` bash

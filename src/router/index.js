@@ -5,15 +5,16 @@ import market from '@/components/market'
 import signin from '@/components/auth/signin'
 import signup from '@/components/auth/signup'
 import * as firebase from 'firebase'
-import { store } from '@/store/store'
+import {
+  store
+} from '@/store/store'
 
 
 Vue.use(Router)
 
 let router = new Router({
   mode: "history",
-  routes: [
-    {
+  routes: [{
       path: '/',
       name: 'market',
       component: market,
@@ -75,3 +76,4 @@ let router = new Router({
 //   }
 
 export default router
+
