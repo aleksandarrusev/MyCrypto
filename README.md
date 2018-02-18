@@ -1,7 +1,7 @@
 # MyCrypto
 
-The app is built with VueJS and uses Coinmarketcap's API for checking the currect cryptocurrencies information. 
-App uses Firebase as a database source, Vue-resource as HTTP API and Vuex for state management.
+The app is built with Vue.js and uses Coinmarketcap's API for checking the currect cryptocurrencies information. 
+App uses Firebase as a database source, Vue-resource as HTTP API and Vuex for state management. 
 
 ![alt text](capture.PNG)
 
